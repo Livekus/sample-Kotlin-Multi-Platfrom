@@ -62,6 +62,13 @@ kotlin {
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
+            implementation(libs.koin.core)
+        }
+        androidMain.dependencies {
+            implementation(libs.koin.core)
+        }
+        iosMain.dependencies {
+            implementation(libs.koin.core)
         }
     }
 }

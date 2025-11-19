@@ -13,6 +13,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -23,7 +25,16 @@ import demo.composeapp.generated.resources.compose_multiplatform
 @Preview
 fun App() {
     MaterialTheme {
-        var showContent by remember { mutableStateOf(false) }
+        val vm: AppViewModel = run {
+            val owner = LocalViewModelStoreOwner.current
+            if (owner == null) {
+                // No ViewModelStoreOwner (e.g., desktop/web/preview) – use a remembered instance
+                remember { AppViewModel() }
+            } else {
+                // Platforms with lifecycle owner (e.g., Android) – use androidx ViewModel
+                viewModel<AppViewModel>()
+            }
+        }
         Column(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.primaryContainer)
@@ -31,17 +42,16 @@ fun App() {
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Button(onClick = { showContent = !showContent }) {
+            Button(onClick = { vm.onToggleClick() }) {
                 Text("Click me!")
             }
-            AnimatedVisibility(showContent) {
-                val greeting = remember { Greeting().greet() }
+            AnimatedVisibility(vm.showContent) {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Image(painterResource(Res.drawable.compose_multiplatform), null)
-                    Text("Compose: $greeting")
+                    Text("Compose: ${vm.greeting}")
                 }
             }
         }
