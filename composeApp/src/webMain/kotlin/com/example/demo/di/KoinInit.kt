@@ -5,4 +5,6 @@ actual object DI {
     actual fun initKoin() {
         // no-op on web
     }
+
+    actual fun getAppViewModelOrNull(): com.example.demo.AppViewModel? = null
 }

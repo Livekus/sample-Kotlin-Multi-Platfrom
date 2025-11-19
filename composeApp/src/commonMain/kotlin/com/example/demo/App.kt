@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import com.example.demo.di.DI
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -28,8 +29,8 @@ fun App() {
         val vm: AppViewModel = run {
             val owner = LocalViewModelStoreOwner.current
             if (owner == null) {
-                // No ViewModelStoreOwner (e.g., desktop/web/preview) – use a remembered instance
-                remember { AppViewModel() }
+                // No ViewModelStoreOwner (e.g., desktop/web/preview) – try Koin inject, fallback to local instance
+                remember { DI.getAppViewModelOrNull() ?: AppViewModel() }
             } else {
                 // Platforms with lifecycle owner (e.g., Android) – use androidx ViewModel
                 viewModel<AppViewModel>()
